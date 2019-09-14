@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<annotation>
+	<folder>JPEGImages</folder>
+	<filename>072.jpg</filename>
+	<path>datasets</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>2828</width>
+		<height>1828</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>wenda</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2127</xmin>
+			<ymin>1376</ymin>
+			<xmax>2151</xmax>
+			<ymax>1403</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>wizard</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>808</xmin>
+			<ymin>233</ymin>
+			<xmax>825</xmax>
+			<ymax>252</ymax>
+		</bndbox>
+	</object>
+</annotation>

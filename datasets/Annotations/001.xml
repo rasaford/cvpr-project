@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<annotation>
+	<folder>JPEGImages</folder>
+	<filename>001.jpg</filename>
+	<path>datasets</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>9921</width>
+		<height>7015</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>waldo</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2387</xmin>
+			<ymin>976</ymin>
+			<xmax>2756</xmax>
+			<ymax>1314</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>waldo</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>5148</xmin>
+			<ymin>2784</ymin>
+			<xmax>5610</xmax>
+			<ymax>3630</ymax>
+		</bndbox>
+	</object>
+</annotation>
