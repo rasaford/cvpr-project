@@ -1,8 +1,9 @@
-#Where’s Waldo?
+# Where’s Waldo?
 
 ![Wheres Waldo](img/fig1.jpg)
 
-## Introduction.
+## Introduction
+
 After 5 intense lectures of computer vision (with more to come!) you must be eager to try something interesting with the skills you learned from the class!
 
 “Where’s Waldo” is a series of Wimmelbilder books featuring Waldo , along with his friends who set off on “a-world-wide hike”. The books feature a series of detailed illustrations (see Fig.1 for an example) and your job is to find Waldo and his friend Wenda and Wizard (see Fig. 2 to get to know them!).
