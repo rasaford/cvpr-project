@@ -16,29 +16,28 @@ To facilitate your job, we provide you some annotated samples, which we painstak
 
 ## Evaluation Metric
 
-We adopt the mean average precision (mAP) as metric to evaluate your algorithm’s performance. We regard the 3 characters as 3 classes and for each class, we calculate the average precision based on the ground-truth and detected characters. You can read more about mAP here:
-
-[medium](https://medium.com/@jonathan_hui/map-mean-average-precision-for-object-detection-45c121a31173)
+We adopt the mean average precision (mAP) as metric to evaluate your algorithm’s performance. We regard the 3 characters as 3 classes and for each class, we calculate the average precision based on the ground-truth and detected characters. You can read more about mAP [here](https://medium.com/@jonathan_hui/map-mean-average-precision-for-object-detection-45c121a31173).
 
 We have provided the evaluation script. Note that your algorithm’s efficiency and novelty will also be counted into the final grade flexibly.
 
-# Requirement
+## Requirement
 
 You are free to propose and implement your own algorithms to address the problem. We have a separate hold-out test set to compare your algorithm’s performance with everyone else in the class. Please submit your code and format your outputs as suggested in ‘REDAME.md’ and also submit a detailed readme file to ensure that the TAs can run your code successfully.
 
-# Don’t know where to start?
+## Don’t know where to start?
 
-(1) Brute-force it! What about a normalized cross-correlation approach as described in Lecture 2. Hint: this method is will be very slow and unlikely to return Waldo (or Wenda or Wizard) as the top hit.
-(2) Interest Point Matching. What about detecting interest points and finding matches in the images? See Lecture 5 / 6, similar to Lab 3.  
-(3) Detectors?
-(4) Classifiers?
+1. Brute-force it! What about a normalized cross-correlation approach as described in Lecture 2. Hint: this method is will be very slow and unlikely to return Waldo (or Wenda or Wizard) as the top hit.
+2. Interest Point Matching. What about detecting interest points and finding matches in the images? See Lecture 5 / 6, similar to Lab 3.
+3. Detectors?
+4. Classifiers?
 
-# Grading Scheme
+## Grading Scheme
 
-Mid-term Report (10%) Due 17.10.
+### Mid-term Report (10%) **Due 17.10.**
+
 ½ to 1 page progress report, detailing your progress to date (what have you tried so far) and the contributions of each team member to date. This is to ensure that you do not leave things to the last minute.
 
-Final Report (25%) Due 07.11
+### Final Report (25%) **Due 07.11**
 
 - Description of rationale behind methodology,
 - Theory behind the method
@@ -46,16 +45,18 @@ Final Report (25%) Due 07.11
 - contribution of each team member.
 - Please also describe the experiments that you tried which did not work and explain why it fails!
 
-Implementation (40%) Due 07.11 with final report.
+### Implementation (40%) **Due 07.11 with final report.**
+
 Documented source code that runs out of the box. You can use any “non-deep” method that you want, so long as you are able to concisely explain in your report and presentation how that method works.
 
-Presentations (25%) done in lab session on 12.11 and 15.11.  
+### Presentations (25%) **done in lab session on 12.11 and 15.11.**
+
 10-15 minutes, highlighting the main points from your final report.
 
-Bonuses (tbd)
+Bonuses (**tbd**)
 We will give bonus marks for the fastest / most innovative / most accurate solutions.
 
-# Details
+## Details
 
 This project aims to encourage students to propose and implement their own algorithms to detect characters of interest
 in images that you would find in the Where's Waldo books.
