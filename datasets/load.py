@@ -3,16 +3,29 @@ import multiprocessing as mp
 import cv2
 import os
 
-# Expects dataset tree of the following shape
-# ├── datasets
-# │   ├── Annotations
-# │   │   └── +.xml
-# │   ├── ImageSets
-# │   │   ├── +.txt
-# │   ├── JPEGImages
-# │   │   ├── +.jpg
-# │   └── load.py
+def load_samples(cat_name: str, dataset_base: str, n_jobs=4):
+    """
+    Expects dataset tree of the following shape
+    ├── datasets
+    │   ├── Annotations
+    │   │   └── +.xml
+    │   ├── ImageSets
+    │   │   ├── +.txt
+    │   ├── JPEGImages
+    │   │   ├── +.jpg
+    │   └── load.py
+    """
+    image_set = os.path.join(dataset_base, 'ImageSets/' + cat_name + '.txt')
+    assert os.path.exists(image_set)
 
+    with open(image_set, 'r') as f:
+        files = [l.strip('\n') for l in f.readlines()]
+
+    with mp.Pool(n_jobs) as pool:
+        args = [(dataset_base, file) for file in files]
+        samples = pool.starmap(read_sample, args)
+
+    return samples
 
 def read_sample(dataset_base, file):
     annotations_path = os.path.join(dataset_base,
@@ -51,16 +64,3 @@ def read_sample(dataset_base, file):
             })
     return sample
 
-
-def load_samples(cat_name: str, dataset_base: str, n_jobs=4):
-    image_set = os.path.join(dataset_base, 'ImageSets/' + cat_name + '.txt')
-    assert os.path.exists(image_set)
-
-    with open(image_set, 'r') as f:
-        files = [l.strip('\n') for l in f.readlines()]
-
-    with mp.Pool(n_jobs) as pool:
-        args = [(dataset_base, file) for file in files]
-        samples = pool.starmap(read_sample, args)
-
-    return samples
