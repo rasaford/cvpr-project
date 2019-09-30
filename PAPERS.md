@@ -10,3 +10,7 @@
 
 - [12,000-fps Multi-object detection using HOG descriptor and SVM classifier](https://ieeexplore.ieee.org/document/8206487)
 - [SVM-Based Object Detection Using Self-quotient ε-Filter and Histograms of Oriented Gradients](https://link.springer.com/chapter/10.1007/978-3-642-27534-0_18)
+
+## HOG & SVM Tutorials:
+
+- [OpenCV Python](https://www.learnopencv.com/histogram-of-oriented-gradients/)
