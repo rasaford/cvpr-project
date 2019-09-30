@@ -1,9 +1,11 @@
 import xml.etree.ElementTree as ET
 import multiprocessing as mp
+import numpy as np
 import cv2
 import os
 
-def load_samples(cat_name: str, dataset_base: str, n_jobs=4):
+
+def load_samples(cat_name: str, dataset_base: str, resample=False, n_jobs=4):
     """
     Expects dataset tree of the following shape
     ├── datasets
@@ -25,7 +27,35 @@ def load_samples(cat_name: str, dataset_base: str, n_jobs=4):
         args = [(dataset_base, file) for file in files]
         samples = pool.starmap(read_sample, args)
 
-    return samples
+    classes = dict()
+    for sample in samples:
+        for cl in sample['classes']:
+            for bbox in cl['bounds']:
+                img = sample['img'][bbox[1]:bbox[3], bbox[0]:bbox[2]]
+                if resample:
+                    img = resample_img(img, 128, 256)
+                if cl['name'] in classes:
+                    classes[cl['name']].append(img)
+                else:
+                    classes[cl['name']] = [img]
+    
+    res = dict()
+    for name, cl in classes.items():
+        res[name] = np.random.shuffle(cl)
+    return classes
+
+
+def resample_img(img, w, h):
+    i_h, i_w = img.shape[:2]
+    ratio = float(w) / h
+    if ratio > 1:
+        sy = int(i_h / ratio)
+        img = img[sy//2: -sy//2, :]
+    else:
+        sx = int(i_w * ratio)
+        img = img[:, sx//2: -sx//2]
+    return cv2.resize(img, (w, h))
+
 
 def read_sample(dataset_base, file):
     annotations_path = os.path.join(dataset_base,
@@ -63,4 +93,3 @@ def read_sample(dataset_base, file):
                 'bounds': bounds
             })
     return sample
-
