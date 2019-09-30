@@ -4,6 +4,7 @@
 
 - [You Only Look Once: Unified, Real-Time Object Detection V1](https://arxiv.org/pdf/1506.02640.pdf)
 - [SSD: Single Shot MultiBox Detector](https://arxiv.org/pdf/1512.02325.pdf)
+- [Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks](https://arxiv.org/pdf/1506.01497.pdf)
 
 ## HOG and SVM object detection:
 
