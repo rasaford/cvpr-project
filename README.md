@@ -78,7 +78,7 @@ For your inputs, any input format that follows the provided directory structure 
 image_name score xmin ymin xmax ymax
 ```
 
-where `score` denotes the prediction confidence of the bounding box represented by [xmin, ymin, xmax, ymax], i,e,. the top left and bottom right of the rectangle.
+where `score` denotes the prediction confidence of the bounding box represented by `[xmin, ymin, xmax, ymax]`, i.e.. the top left and bottom right of the rectangle.
 
 I suggest to use pycharm for this project. Any other questions, please put them on project channel in Slack.
 
