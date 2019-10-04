@@ -3,9 +3,10 @@ import multiprocessing as mp
 import numpy as np
 import cv2
 import os
+import math
 
 
-def load_samples(cat_name: str, dataset_base: str, resample=False, n_jobs=4):
+def load_images(cat_name: str, dataset_base: str, n_jobs=4):
     """
     Expects dataset tree of the following shape
     ├── datasets
@@ -23,41 +24,48 @@ def load_samples(cat_name: str, dataset_base: str, resample=False, n_jobs=4):
     with open(image_set, 'r') as f:
         files = [l.strip('\n') for l in f.readlines()]
 
-    with mp.Pool(n_jobs) as pool:
+    with mp.Pool(n_jobs) as p:
         args = [(dataset_base, file) for file in files]
-        samples = pool.starmap(read_sample, args)
+        return p.starmap(_read_sample, args)
+
+
+def load_annotations(cat_name: str, dataset_base: str, size=0, n_jobs=4):
+    samples = load_images(cat_name, dataset_base, n_jobs)
 
     classes = dict()
     for sample in samples:
         for cl in sample['classes']:
-            for bbox in cl['bounds']:
-                img = sample['img'][bbox[1]:bbox[3], bbox[0]:bbox[2]]
-                if resample:
-                    img = resample_img(img, 128, 256)
-                if cl['name'] in classes:
-                    classes[cl['name']].append(img)
-                else:
-                    classes[cl['name']] = [img]
-    
-    res = dict()
-    for name, cl in classes.items():
-        res[name] = np.random.shuffle(cl)
+            imgs = [sample['img'][bbox[1]:bbox[3], bbox[0]:bbox[2]]
+                    for bbox in cl['bounds']]
+            if cl['name'] in classes:
+                classes[cl['name']] += imgs
+            else:
+                classes[cl['name']] = imgs
+
+    if size > 0:
+        resampled = dict()
+        with mp.Pool(n_jobs) as p:
+            for name, imgs in classes.items():
+                args = [(img, size) for img in imgs]
+                resampled[name] = p.starmap(_resize_sample, args)
+        classes = resampled
+
     return classes
 
 
-def resample_img(img, w, h):
-    i_h, i_w = img.shape[:2]
-    ratio = float(w) / h
-    if ratio > 1:
-        sy = int(i_h / ratio)
-        img = img[sy//2: -sy//2, :]
+def _resize_sample(img, size):
+    y, x = img.shape[:2]
+    if x > y:
+        d = (x - y) // 2
+        img = img[:, d: y + d]
     else:
-        sx = int(i_w * ratio)
-        img = img[:, sx//2: -sx//2]
-    return cv2.resize(img, (w, h))
+        d = (y - x) // 2
+        img = img[d: x + d, :]
+
+    return cv2.resize(img, dsize=(size, size))
 
 
-def read_sample(dataset_base, file):
+def _read_sample(dataset_base, file):
     annotations_path = os.path.join(dataset_base,
                                     'Annotations/{}.xml'.format(file))
     img_path = os.path.join(dataset_base, 'JPEGImages/{}.jpg'.format(file))
