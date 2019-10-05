@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "/Users/databook/miniconda3/envs/cvpr/bin/python",
+    "python.formatting.provider": "black"
+}
