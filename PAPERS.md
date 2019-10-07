@@ -6,6 +6,10 @@
 - [SSD: Single Shot MultiBox Detector](https://arxiv.org/pdf/1512.02325.pdf)
 - [Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks](https://arxiv.org/pdf/1506.01497.pdf)
 
+## SVMs:
+
+- [Probabilistic Outputs for Support Vector Machines and Comparisons to Regularized Likelihood Methods](http://citeseer.ist.psu.edu/viewdoc/download;jsessionid=D54ABA39AF4A417A7F67D2590FA6F433?doi=10.1.1.41.1639&rep=rep1&type=pdf)
+
 ## HOG and SVM object detection:
 
 - [12,000-fps Multi-object detection using HOG descriptor and SVM classifier](https://ieeexplore.ieee.org/document/8206487)
