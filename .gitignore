@@ -289,3 +289,10 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/osx,linux,python,windows,pycharm,jupyternotebooks
+cvpr-project.iml
+misc.xml
+other.xml
+modules.xml
+vcs.xml
+profiles_settings.xml
+Project_Default.xml
