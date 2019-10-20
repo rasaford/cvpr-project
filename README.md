@@ -61,7 +61,7 @@ We will give bonus marks for the fastest / most innovative / most accurate solut
 This project aims to encourage students to propose and implement their own algorithms to detect characters of interest
 in images that you would find in the Where`s Waldo books.
 
-To facilitate the detection task, we release training and validation data for you to work with and test your algorithm`s effectiveness. Our images are scanned from the "Where`s Waldo" books and we don`t have copyright so please do not distribute the images online.
+To facilitate the detection task, we release training and validation data for you to work with and test your algorithm\`s effectiveness. Our images are scanned from the "Where\`s Waldo" books and we don`t have copyright so please do not distribute the images online.
 
 In `datasets/`, you will find `JPEGImages/` and corresponding `Annotations/`. The image splits (our recommended training and validation split) are are given in `ImageSet/`. You can visualize the annotations with the provided script `vis_anno.py`
 
