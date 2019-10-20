@@ -10,6 +10,27 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import cv2
 from argparse import ArgumentParser
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+
+def draw_bbox2(ax, name, box, col='r'):
+    r = patches.Rectangle((box[0], box[1]),
+                          box[2] - box[0],
+                          box[3] - box[1],
+                          linewidth=3,
+                          edgecolor=col,
+                          facecolor='none')
+    ax.add_patch(r)
+    ax.text(box[0], box[1], name, bbox={'facecolor': col, 'linewidth': 0})
+
+
+def draw_annotation(ax, classes):
+    colors = plt.get_cmap('tab10')
+    for idx, cl in enumerate(classes):
+        col = colors(idx)
+        for box in cl['bounds']:
+            draw_bbox2(ax, cl['name'], box, col)
 
 
 def draw_bbox(pimage, captions):
