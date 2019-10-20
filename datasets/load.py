@@ -3,7 +3,12 @@ import multiprocessing as mp
 import cv2
 import os
 
+
 def load_samples(cat_name: str, dataset_base: str, n_jobs=4):
+    load_n_samples(cat_name, dataset_base, n_jobs)
+
+
+def load_n_samples(cat_name: str, dataset_base: str, end_after_n=None, n_jobs=4):
     """
     Expects dataset tree of the following shape
     ├── datasets
@@ -19,13 +24,14 @@ def load_samples(cat_name: str, dataset_base: str, n_jobs=4):
     assert os.path.exists(image_set)
 
     with open(image_set, 'r') as f:
-        files = [l.strip('\n') for l in f.readlines()]
+        files = [l.strip('\n') for l in f.readlines()[:end_after_n]]
 
     with mp.Pool(n_jobs) as pool:
         args = [(dataset_base, file) for file in files]
         samples = pool.starmap(read_sample, args)
 
     return samples
+
 
 def read_sample(dataset_base, file):
     annotations_path = os.path.join(dataset_base,
