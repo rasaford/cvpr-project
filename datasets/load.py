@@ -6,11 +6,11 @@ import os
 import math
 
 
-def load_samples(cat_name: str, dataset_base: str, n_jobs=4):
-    load_n_samples(cat_name, dataset_base, n_jobs)
+def load_images(cat_name: str, dataset_base: str, n_jobs=4):
+    return load_n_images(cat_name, dataset_base, n_jobs)
 
 
-def load_n_samples(cat_name: str, dataset_base: str, end_after_n=None, n_jobs=4):
+def load_n_images(cat_name: str, dataset_base: str, end_after_n=None, n_jobs=4):
     """
     Expects dataset tree of the following shape
     ├── datasets
