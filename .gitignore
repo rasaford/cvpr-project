@@ -289,3 +289,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/osx,linux,python,windows,pycharm,jupyternotebooks
+
+cache/
+.vscode/*
+*.pkl
