@@ -54,7 +54,7 @@ def load_annotations(cat_name: str, dataset_base: str, size=0, n_jobs=4):
                         if r.size == 0:
                             r = img[bx[1] + d : bx[3] - d, bx[0] : bx[2]]
                     img = cv2.resize(
-                        r, dsize=(size, size), interpolation=cv2.INTER_NEAREST
+                        r, dsize=(size, size), interpolation=cv2.INTER_LINEAR
                     )
 
                 imgs.append(img)
