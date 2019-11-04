@@ -293,3 +293,10 @@ $RECYCLE.BIN/
 cache/
 .vscode/*
 *.pkl
+Project_Default.xml
+cvpr-project.iml
+misc.xml
+modules.xml
+other.xml
+vcs.xml
+profiles_settings.xml
