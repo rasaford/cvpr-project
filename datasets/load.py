@@ -39,20 +39,20 @@ def load_annotations(cat_name: str, dataset_base: str, size=0, n_jobs=4):
             for bx in cl["bounds"]:
                 img = sample["img"]
                 if size > 0:
-                    dx = bx[2] - bx[0]
-                    dy = bx[3] - bx[1]
+                    dx = bx['x2'] - bx['x1']
+                    dy = bx['y2'] - bx['y1']
                     # make region square by extending the smaller dimension
                     if dx > dy:
                         d = (dx - dy) // 2
-                        r = img[bx[1] - d : bx[3] + d, bx[0] : bx[2]]
+                        r = img[bx['y1'] - d : bx['y2'] + d, bx['x1'] : bx['x2']]
                         # if impossible shrink the larger one
                         if r.size == 0:
-                            r = img[bx[1] : bx[3], bx[0] + d : bx[2] - d]
+                            r = img[bx['y1'] : bx['y2'], bx['x1'] + d : bx['x2'] - d]
                     else:
                         d = (dy - dx) // 2
-                        r = img[bx[1] : bx[3], bx[0] - d : bx[2] + d]
+                        r = img[bx['y1'] : bx['y2'], bx['x1'] - d : bx['x2'] + d]
                         if r.size == 0:
-                            r = img[bx[1] + d : bx[3] - d, bx[0] : bx[2]]
+                            r = img[bx['y1'] + d : bx['y2'] - d, bx['x1'] : bx['x2']]
                     img = cv2.resize(
                         r, dsize=(size, size), interpolation=cv2.INTER_LINEAR
                     )
@@ -87,12 +87,12 @@ def _read_sample(dataset_base, file):
     for boxes in root.iter("object"):
         name = boxes.find("name").text
         bounds = [
-            [
-                int(box.find("xmin").text),
-                int(box.find("ymin").text),
-                int(box.find("xmax").text),
-                int(box.find("ymax").text),
-            ]
+            dict(
+                x1=int(box.find("xmin").text),
+                y1=int(box.find("ymin").text),
+                x2=int(box.find("xmax").text),
+                y2=int(box.find("ymax").text),
+            )
             for box in boxes.findall("bndbox")
         ]
 
