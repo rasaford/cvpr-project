@@ -103,3 +103,34 @@ def _read_sample(dataset_base, file):
         else:
             sample["classes"].append({"name": name, "bounds": bounds})
     return sample
+
+def bbx_iou(bbx1, bbx2):
+    assert bbx1['x1'] < bbx1['x2']
+    assert bbx1['y1'] < bbx1['y2']
+    assert bbx2['x1'] < bbx2['x2']
+    assert bbx2['y1'] < bbx2['y2']
+    
+    # determine the coordinates of the intersection rectangle
+    x_left = max(bbx1['x1'], bbx2['x1'])
+    y_top = max(bbx1['y1'], bbx2['y1'])
+    x_right = min(bbx1['x2'], bbx2['x2'])
+    y_bottom = min(bbx['y2'], bbx2['y2'])
+    
+    if x_right < x_left or y_bottom < y_top:
+        return 0.0
+
+    # The intersection of two axis-aligned bounding boxes is always an
+    # axis-aligned bounding box
+    intersection_area = (x_right - x_left) * (y_bottom - y_top)
+    
+    # compute the area of both AABBs
+    bbx1_area = (bbx1['x2'] - bbx1['x1']) * (bbx1['y2'] - bbx1['y1'])
+    bbx2_area = (bbx2['x2'] - bbx2['x1']) * (bbx2['y2'] - bbx2['y1'])
+    
+    # compute the intersection over union by taking the intersection
+    # area and dividing it by the sum of prediction + ground-truth
+    # areas - the interesection area
+    iou = intersection_area / float(bbx1_area + bbx2_area - intersection_area)
+    assert iou >= 0.0
+    assert iou <= 1.0
+    return iou
