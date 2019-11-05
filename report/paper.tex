@@ -16,21 +16,27 @@
 \begin{abstract}
 This report describes our group's implementation of a computer vision algorithm to detect Waldo, Wenda, and the Wizard from a series of "Where's Waldo" books. The goal of this project is to detect the three characters from the provided high-resolution images, which can be very complex with a lot of detail and many other characters. The three characters also may or may not appear in any given image.\\
 
-Briefly describe the problem, the challenges, your proposed solution and achieved results. 
+Due to the complex nature of the given images, and variation of the characters' appearances, detecting the characters accurately proved to be a challenge. In some cases, we could not identify where the characters are, and a lot of false positives were present as well.\\
+
+Our proposed solution is to use a histogram over gradients (HoG) feature descriptor, then training a linear support vector machine (SVM) to create our classifier. We were able to detect some instances of Waldo, espcially in the postcard in the top left hand corner of the page.
+
+
 \end{abstract}
 %%%% body goes in here %%%%
 \section{Introduction}
-Problem statements. The definition, and the challenges.. 
+"Where's Waldo" is a series of books containing detailed, high-resolution illustrations. For this project, we are given a set of scanned images from the book, and are tasked to design a computer vision algorithm that can detect the three characters from the book: Waldo, Wenda, and the Wizard. Each image may contain one or more of these characters. We are provided with a set of training images with annotations of the bounding box locations of Waldo, Wenda, or the Wizard in each image.\\
 
-Any existing methods~\cite{deng2009imagenet}, their downsides.. 
+Throughout the course of the project, we have attempted several different methods with varying degrees of success. While there are several existing computer vision algorithms for face and object detection, such as the "You Only Look Once" object detection~\cite{redmon2016yolo}, these do not seem to work too well with illustrated characters like Waldo, in a complex illustrated iamge. The characters' appearance and size also seems to vary across images, sometimes only a smaller part of the character (i.e a part of the face) is visible. This makes identifying the characters more challenging as well.\\
 
-Your proposed approach to solve the challenges..
+We proposed using a few methods:
 
-Highlight any particulars (contributions) in your solution..
 \begin{itemize}
-    \item We propose xxx
-    \item We achieve xxx
+    \item histogram over gradients (HoG) feature descriptor
+    \item training a linear support vector machine (SVM) to create a multiclass-classifier
 \end{itemize}
+
+We will discuss our proposed solution in the next section.\\
+
 
 \section{Proposed Solution}
 Give an overview of your solution, put it in a framework. Then, detail each part in the framework.
