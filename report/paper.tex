@@ -1,0 +1,99 @@
+\documentclass[11pt]{article}
+\usepackage[OT4]{fontenc}
+\newtheorem{define}{Definition}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\oddsidemargin=0.15in
+\evensidemargin=0.15in
+\topmargin=-.5in
+\textheight=9in
+\textwidth=6.25in
+
+\begin{document}
+	
+\input{preamble.tex}
+\header{Maximilian Fruehauf, David Drews, Choo Wen Xin}{Where's Waldo Detector using Computer Vision}
+\begin{abstract}
+This report describes our group's implementation of a computer vision algorithm to detect Waldo, Wenda, and the Wizard from a series of "Where's Waldo" books. The goal of this project is to detect the three characters from the provided high-resolution images, which can be very complex with a lot of detail and many other characters. The three characters also may or may not appear in any given image.\\
+
+Briefly describe the problem, the challenges, your proposed solution and achieved results. 
+\end{abstract}
+%%%% body goes in here %%%%
+\section{Introduction}
+Problem statements. The definition, and the challenges.. 
+
+Any existing methods~\cite{deng2009imagenet}, their downsides.. 
+
+Your proposed approach to solve the challenges..
+
+Highlight any particulars (contributions) in your solution..
+\begin{itemize}
+    \item We propose xxx
+    \item We achieve xxx
+\end{itemize}
+
+\section{Proposed Solution}
+Give an overview of your solution, put it in a framework. Then, detail each part in the framework.
+
+\begin{figure}[ht]
+\centering
+    \includegraphics[width=14cm]{figures/coteaching.png}
+    \caption{Our proposed solution.}
+    \label{fig:framework}
+\end{figure}
+
+
+\section{Experiments}
+\subsection{Data Preparation and Configuration}
+
+Specify how to process the data, how to evaluate the performance (e.g., mAP).
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l|c|c|c}
+    \hline
+     Dataset & \#train & \#test & \#Category\\
+    \hline
+    MNIST& 60,000 & 10,000 & 10  \\
+    CIFAR-10& 50,000 & 10,000 & 10 \\
+    \hline
+    \end{tabular}
+    \caption{Summary of datasets.}
+    \label{tab:dataset}
+\end{table}
+
+\subsection{Implementation}
+Give a figure to illustrate your implementation, then detail each parts.
+
+\subsection{Results}
+Present the results, both qualitatively (visualize) and quantitatively (specific numbers)..
+Analyze the results
+\subsection{Discussion}
+Strengths and weakness in your method.
+
+\section{Conclusion}
+In this project, we ...
+
+\section{Group Information}
+\begin{table*}[ht]
+    \centering
+    \begin{tabular}{l|c|c|c}
+    \hline
+     Member & Student ID & Email & Contribution\\
+    \hline
+    Maximilian Fruehauf& Axx & e0445541@u.nus.edu & xxx \\
+    David Drews& Axx &e0454245@u.nus.edu & xxx  \\
+    Choo Wen Xin& A0160465H & e0053347@u.nus.edu & xxx  \\
+    \hline
+    \end{tabular}
+    \caption{Group member information.}
+    \label{tab:dataset}
+\end{table*}
+\bibliographystyle{plain}
+
+\bibliography{references}
+ 
+\end{document}
+
+
+
+
