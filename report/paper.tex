@@ -30,13 +30,17 @@ Throughout the course of the project, we have attempted several different method
 
 Across all approaches, we've only been working with the data that was handed to us as part of the assignment. Although our code alters the given data wherever needed, we did neither add any entirely new data from sources like the internet nor did we manually improve the existing data as could be achieved by adding or improving annotations.\\
 
+The data we utilised can be summarised as follows:
+
 \begin{itemize}
     \item 80 high resolution images from the \textit{Where's Waldo} book series
-    \item 
-    \item training a linear support vector machine (SVM) to create a multiclass-classifier
+    \item 137 images of Waldo cropped to the patch of the image as describe in the annotation files
+    \item 43 images of Wenda cropped to the patch of the image as describe in the annotation files
+    \item 27 images of Wizard cropped to the patch of the image as describe in the annotation files
+    \item Approximately 14,000 to 15,000 images (128x128px) subsampled from the original images, which did neither contain Waldo, Wenda or Wizard, used as negative training samples
 \end{itemize}
 
-
+In order to assess the performance of our algorithms we split the given set of images in a training and a testing set. This reduced the amount of positive samples of the three characters to 124 training samples for Waldo, 36 for Wenda and 24 for Wizard. As we will discuss in the upcoming sections, this uneaven split of training samples influenced the performance of our solution for the three different classes. 
 
 We proposed using a few methods:
 
