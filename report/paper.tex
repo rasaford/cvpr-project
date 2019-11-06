@@ -3,6 +3,8 @@
 \newtheorem{define}{Definition}
 \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{booktabs}
 \oddsidemargin=0.15in
 \evensidemargin=0.15in
 \topmargin=-.5in
@@ -66,23 +68,75 @@ Give an overview of your solution, put it in a framework. Then, detail each part
 \section{Experiments}
 \subsection{Data Preparation and Configuration}
 
-
-Specify how to process the data, how to evaluate the performance (e.g., mAP).
-\begin{table}[ht]
+\begin{figure}[]
     \centering
-    \begin{tabular}{l|c|c|c}
-    \hline
-     Dataset & \#train & \#test & \#Category\\
-    \hline
-    MNIST& 60,000 & 10,000 & 10  \\
-    CIFAR-10& 50,000 & 10,000 & 10 \\
-    \hline
+    \includegraphics[width=0.4\linewidth]{figures/preprocess_waldo} 
+    \hspace{1cm}
+    \includegraphics[width=0.4\linewidth]{figures/kmeans_waldo} 
+    \caption{Preprocessed sample images for the waldo class. The left images are cropped and scaled to \( 128 \times 128 \) pixels.
+    To the right the same images are shown after kemans preprocessing (originally gray-cale, but color mapped for display purposes)}
+    \label{fig:preprocessed-samples}
+\end{figure}
+
+The images in the dataset come as annotated bounding boxes of varying aspect ratios and sizes in pixels.
+Also the size of the respective images changes as well. Therefore we simplified the detection process by
+generating \( (128 \times 128) \) px training images from the provided bounding boxes. 
+Doing so resulted in some croping to the actual characters appearances, which cannot be avoided in some corner cases.
+However in general we were able to regularize the bounding boxes without loosing any pixels belong to the positive annotations.
+See \autoref{fig:preprocessed-samples} for examples of the cropped and scaled input images.
+
+To map the color images as robustly as possible to gray scale values we used a K-Means detector 
+and assigned each of the modes an equally gray spaced color. 
+K-Means works by intially choosing random starting points in the image and then projecting an area around them, calculating the "center of gravity"
+of those inlier points and then shifting the new centroid to this "center of gravity". When repeating this
+process until convergence \( k \) such different means are found. This process results in a non-uniform quantization of the input image.
+
+We use this property to train the K-Means classifier on a sample image of the \verb|wenda| class, which only 
+shows the colors red, blue, black white. However we use \( k=5 \) to classify any color not lying in these four as a separate class, and then merge 
+its results with the white color class. Then these four resulting classes colored centroids are mapped to uniformly
+chosen values \( v \in [0, 255] \). This drastically reduces the complexity of the input images as can be seen in the right image in \autoref{fig:preprocessed-samples},
+reducing input noise when processing the images with our feature descriptor in \autoref{sec:implemenation}.
+
+\vspace{0.5cm}
+Generating negative samples is done by randomly sampling regions of differing scales and positions from the provided training images.
+In this process we additionally make sure, none of the proposed negative samples overlapping with any on the ground truth annotations present in the images.
+Then we scale these proposed negative samples to \( (128 \times 128 ) \) px and apply the filtering described in the above paragraph to each sample.
+Since the negative samples are randomly generated, we can create arbitrary amounts of them. 
+For our testing \( \approx15000 \) worked well. 
+Additonal information in the exact size of the dataset is shown in \autoref{tab:dataset-stats}
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        Class name & \#samples & percentage \\
+        \midrule
+        waldo & 137 &  1.01\% \\
+        wenda & 43&  0.32\% \\
+        wizard& 27&  0.20\% \\
+        negative & 13315&  98.47\% \\
+        \bottomrule
     \end{tabular}
-    \caption{Summary of datasets.}
-    \label{tab:dataset}
+    \label{tab:dataset-stats}
+    \caption{Dataset statistics for the training}
 \end{table}
 
-\subsection{Implementation}
+% Specify how to process the data, how to evaluate the performance (e.g., mAP).
+% \begin{table}[ht]
+%     \centering
+%     \begin{tabular}{l|c|c|c}
+%     \hline
+%      Dataset & \#train & \#test & \#Category\\
+%     \hline
+%     MNIST& 60,000 & 10,000 & 10  \\
+%     CIFAR-10& 50,000 & 10,000 & 10 \\
+%     \hline
+%     \end{tabular}
+%     \caption{Summary of datasets.}
+%     \label{tab:dataset}
+% \end{table}
+
+\subsection{Implementation}\label{sec:implemenation}
 Give a figure to illustrate your implementation, then detail each parts.
 
 \subsection{Results}
