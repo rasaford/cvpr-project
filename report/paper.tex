@@ -154,7 +154,7 @@ This gives some invariance of the feature descriptor to slight pixel value chang
 To also gives some spatial invariance, a set number of these histogramed cells are concatenated together. Which is repeated for each cell.
 In a final step, the resulting feature vector is normalized with one of a multitude of possible norms. We decided to use the \( L_2 \)-Hys norm.
 
-The HOV (Histograms over Values) descriptor works essentially the same (in fact most of the code is copied from the \verb|scikit-learn| HOG implemenation),
+The HOV (Histograms over Values) descriptor works essentially the same (in fact most of the code is copied from the \verb|scikit-image| HOG implemenation),
 with the only difference being that the initial histogram on each cell is not computed from the gradient of the input,
 but rather the values of the input image inself.
 
@@ -163,15 +163,41 @@ value representation of the input images. The effect of which we evaluate in \au
 
 
 \paragraph{SVM Classification}
+Deciding which of the four classes \( \{waldo, wenda, wizard, negative \} \) should be assigned to any given window 
+as confidently as possible, is handled by an ensemble of SVMs (Support Vector Machine)\cite{Hearst:1998:SVM:630302.630387}.
+
+One SVM can only be used as a binary classifier, as explained in the remainder of this paragraph, but we require multiclass classification. 
+Therefore we adopt a one-vs-pne classification approach, where for each pair of classes \( \forall i,j: (c_i,c_j) \) a separate binary classifier is trained
+and classifications are chosen by majority vote. We chose a one-vs-one approach versus a more traditional one-vs-rest approach as we a very unequal distribution of
+positive an negative samples. Therefore any one-vs-rest classifier learns to only differentiate between the given class and negative samples. This showed itself 
+during testing and classification performance could be improved by switching to a one-vs-one approach, even considering the additional computational expense.
+
+Any one of the trained SVMs works by finding a hyperplane (plane in high dimensional feature space) which best separates the positive, from the negative samples.
+The computation of this plane is performed iteratively by choosing a random starting plane and then finding dimensions which provide a good separation of the data. 
+One such "good" separation is called a support vector of the hyperplane, giving the name Support Vector Machine. 
+However this only works well if the data can be linearly separated by the dimensions of the input data. 
+Since this is not always the case, and in general hard to analyse in high dimensional cases, we adopt an approach called RBF (Radial basis function) as proposed in\cite{10.1007/978-3-540-28647-9_85}.
+Wang et. al. use this radial basis function to extend the data into another dimension, which in which it is hopefully linearly separable. Fitting this RBF kernel is also done at training time.
+Traditionally SVMs can only give a distance of the sample from the decision hyperplane as a measure of confidence. 
+However for this metric is not always accurate and generally unbounded in value. Therefore we train another probabalistic model as proposed by Platt\ et.\ al.\cite{Platt99probabilisticoutputs}.
+This applies cross validation on splits of the training data to calculate these probabilities, causing more computational expense during training.
+
+Classification with the trained SVM is performed by first proposing a large amount of windows on the image and scaling each one to 
+\( (128 \times 128) \) px, then performing the preprocessing steps outlined in \autoref{subsec:data-prep}. As the number of windows scales quadratically 
+with image size, we process them in parallel across all cpus available. The windows in feature space then get given to the classifier, which predicts a label, probability \( p \) and the
+\( p_{ratio} = p_{max} / p_{max - 1} \) value. Here \( p_{ratio} \) is used to give an indication of how confident the detector is in relation to all other classes with \( p_{max}, p_{max-1} \) being the two largest probabilities.
+All predictions of the class \( negative \) get discarded, the other ones are passed to the Non-Maximum Suppression step.
 
 
-\paragraph{Non-Maximum suppression}
-
+\paragraph{Non-Maximum Suppression}
+Since Classification is done for each window independently, and windows are densely sampled to provide good prediction accuracy, 
+overlapping windows are possible. These get removed my performing Non-Maximum Suppression, which partitions all detections into groups according to their overlap.
+Then for each of these groups, we chose the element with the maximum \( p \) value. Additional filtering is applied based on \( p_{ratio} > 1.5 \wedge p > 0.5 \) having to be true for each detection.
+There values were determined experimentally to reduce the number of low confidence detections in the final result.
 
 \paragraph{Class Label outputs}
-
-
-
+In the final step the detections after Non-Maximum Suppression are drawn to the input image and returned. 
+This steps also includes potential drawing of ground truth boxes if provided
 
 \subsection{Results}\label{subsec:results}
 Present the results, both qualitatively (visualize) and quantitatively (specific numbers)..
@@ -200,6 +226,7 @@ In this project, we ...
     \caption{Group member information.}
     \label{tab:dataset}
 \end{table*}
+
 \bibliographystyle{plain}
 
 \bibliography{references}
