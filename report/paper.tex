@@ -26,6 +26,8 @@ Our proposed solution is to use a histogram over gradients (HoG) feature descrip
 \end{abstract}
 %%%% body goes in here %%%%
 \section{Introduction}
+
+
 "Where's Waldo" is a series of books containing detailed, high-resolution illustrations. For this project, we are given a set of scanned images from the book, and are tasked to design a computer vision algorithm that can detect the three characters from the book: Waldo, Wenda, and the Wizard. Each image may contain one or more of these characters. We are provided with a set of training images with annotations of the bounding box locations of Waldo, Wenda, or the Wizard in each image.\\
 
 Throughout the course of the project, we have attempted several different methods with varying degrees of success. While there are several existing computer vision algorithms for face and object detection, such as the "You Only Look Once" object detection~\cite{redmon2016yolo}, these do not seem to work too well with illustrated characters like Waldo, in a complex illustrated iamge. The characters' appearance and size also seems to vary across images, sometimes only a smaller part of the character (i.e a part of the face) is visible. This makes identifying the characters more challenging as well.\\
@@ -53,6 +55,12 @@ We proposed using a few methods:
 
 We will discuss our proposed solution in the next section.\\
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/waldo_winter} 
+    \caption{Exmaple of an image showing detections with \( (name, p, p_{ratio}) \) in red, ground truth in green}
+    \label{fig:waldo-winter}
+\end{figure}
 
 \section{Proposed Solution}
 Give an overview of your solution, put it in a framework. Then, detail each part in the framework.
@@ -66,7 +74,7 @@ Give an overview of your solution, put it in a framework. Then, detail each part
 
 
 \section{Experiments}
-\subsection{Data Preparation and Configuration}
+\subsection{Data Preparation and Configuration}\label{subsec:data-prep}
 
 \begin{figure}[]
     \centering
@@ -117,31 +125,59 @@ Additonal information in the exact size of the dataset is shown in \autoref{tab:
         negative & 13315&  98.47\% \\
         \bottomrule
     \end{tabular}
-    \label{tab:dataset-stats}
     \caption{Dataset statistics for the training}
+    \label{tab:dataset-stats}
 \end{table}
 
-% Specify how to process the data, how to evaluate the performance (e.g., mAP).
-% \begin{table}[ht]
-%     \centering
-%     \begin{tabular}{l|c|c|c}
-%     \hline
-%      Dataset & \#train & \#test & \#Category\\
-%     \hline
-%     MNIST& 60,000 & 10,000 & 10  \\
-%     CIFAR-10& 50,000 & 10,000 & 10 \\
-%     \hline
-%     \end{tabular}
-%     \caption{Summary of datasets.}
-%     \label{tab:dataset}
-% \end{table}
 
 \subsection{Implementation}\label{sec:implemenation}
-Give a figure to illustrate your implementation, then detail each parts.
 
-\subsection{Results}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/model_overview} 
+    \caption{Schematic overview of the wlado / wenda / wizard detection pileline.}
+    \label{fig:model-overview}
+\end{figure}
+
+The pipeline for detecting the classes of a given bounding box are displayed in \autoref{fig:model-overview},
+the first 3 steps of which are covered in \autoref{subsec:data-prep}. In the following paragraps we will focus on the
+steps 4-7 of any detection and provide some details of interest in the implementation.
+
+\paragraph{HOG \& HOV feauture descritor}
+To capture shape and color information from the preprocessed sample images, we adopt a twofold feature descriptor, 
+which consists of the HOG descriptor and a histogramed version of the SIFT detector, we call HOV.
+
+HOG works by first calculating the horizontal and vertical gradients in the image, which are then separated into
+quadratic cells. From both a horizontal and vertical window, the magnitude and direction (radians or degrees) of the gradient get computed.
+Then the magnitude is binned according to the corresponding direction. These bins then form a histogram for the cell.
+This gives some invariance of the feature descriptor to slight pixel value changes. 
+To also gives some spatial invariance, a set number of these histogramed cells are concatenated together. Which is repeated for each cell.
+In a final step, the resulting feature vector is normalized with one of a multitude of possible norms. We decided to use the \( L_2 \)-Hys norm.
+
+The HOV (Histograms over Values) descriptor works essentially the same (in fact most of the code is copied from the \verb|scikit-learn| HOG implemenation),
+with the only difference being that the initial histogram on each cell is not computed from the gradient of the input,
+but rather the values of the input image inself.
+
+Concatenating these two independently (with the same parameters) computed feature descriptors gives a good spatial and
+value representation of the input images. The effect of which we evaluate in \autoref{subsec:results}.
+
+
+\paragraph{SVM Classification}
+
+
+\paragraph{Non-Maximum suppression}
+
+
+\paragraph{Class Label outputs}
+
+
+
+
+\subsection{Results}\label{subsec:results}
 Present the results, both qualitatively (visualize) and quantitatively (specific numbers)..
 Analyze the results
+
+Evaluate hog only vs hog / hov
 \subsection{Discussion}
 Strengths and weakness in your method.
 
@@ -151,14 +187,15 @@ In this project, we ...
 \section{Group Information}
 \begin{table*}[ht]
     \centering
-    \begin{tabular}{l|c|c|c}
-    \hline
+    \begin{tabular}{lccc}
+    % \hline
+    \toprule
      Member & Student ID & Email & Contribution\\
-    \hline
+    \midrule
     Maximilian Fruehauf& Axx & e0445541@u.nus.edu & xxx \\
     David Drews& Axx &e0454245@u.nus.edu & xxx  \\
     Choo Wen Xin& A0160465H & e0053347@u.nus.edu & xxx  \\
-    \hline
+    \bottomrule
     \end{tabular}
     \caption{Group member information.}
     \label{tab:dataset}
