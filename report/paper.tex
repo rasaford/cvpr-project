@@ -87,7 +87,7 @@ one with the highest probability in each group. Finally, the resulting boxes wit
 be drawn on the image with the value of its probability and ratio as illustrated in
 \autoref{fig:waldo-winter}. The details will be further discussed in \autoref{subsec:implementation}.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/waldo_winter} 
     \caption{Image showing detections with \( (name, p, p_{ratio}) \) in red, ground truth in green.}
@@ -104,7 +104,7 @@ Doing so resulted in some cropping to the actual characters appearances, which c
 However, in general we were able to regularize the bounding boxes without losing any pixels belonging to the positive annotations.
 See \autoref{fig:preprocessed-samples} for examples of the cropped and scaled input images.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.4\linewidth]{figures/preprocess_waldo} 
     \hspace{1cm}
@@ -119,14 +119,12 @@ and assigned each of the modes an equally gray spaced color.
 K-Means works by intially choosing random starting points in the image and then projecting an area around them, calculating the "center of gravity"
 of those inlier points and then shifting the new centroid to this "center of gravity". When repeating this
 process until convergence, \( k \) such different means are found. This process results in a non-uniform quantization of the input image.
-
 We use this property to train the K-Means classifier on a sample image of the \verb|wenda| class, which only 
 shows the colors red, blue, black white. However we use \( k=5 \) to classify any color not lying in these four as a separate class, and then merge 
 its results with the white color class. Then these four resulting classes colored centroids are mapped to uniformly
 chosen values \( v \in [0, 255] \). This drastically reduces the complexity of the input images as can be seen in the right image in \autoref{fig:preprocessed-samples},
 reducing input noise when processing the images with our feature descriptor in \autoref{subsec:implementation}.
 
-\vspace{0.5cm}
 Generating negative samples is done by randomly sampling regions of differing scales and positions from the provided training images.
 In this process we additionally make sure that none of the proposed negative samples overlap with any of the ground truth annotations present in the images.
 Then we scale these proposed negative samples to \( (128 \times 128 ) \) px and apply the filtering described in the above paragraph to each sample.
@@ -134,7 +132,9 @@ Since the negative samples are randomly generated, we can create arbitrary amoun
 For our testing \( \approx15000 \) worked well. 
 Additonal information in the exact size of the dataset is shown in \autoref{tab:dataset-stats}.
 
-\begin{table}[]
+\vspace{0.5cm}
+
+\begin{table}[h]
     \centering
     \begin{tabular}{ccc}
         \toprule
@@ -293,9 +293,23 @@ Strengths and weakness in your method.
 
 Maybe we can talk about the methods we also tried but didn't work/didn't use for the final solution here(?)
 
+Strengths
+Schnell
+Accuracy für Waldo
+
+
 Looking at the results our classifier produced for the test images, it appears that the internal
 representation of our classes is not distinctive enough to achieve a very good classification performance.
-An example for a classification error that undergirds this hypothesis can be seen in TBD
+An example for a classification error that undergirds this hypothesis can be seen in Image 1 of
+\autoref{fig:detections}. The dog wears glasses and its colours match the typical appearance of
+Waldo but other than that they don't have much in commonn. Nevertheless, it is classified as Waldo
+whereas non of the Wizards is detected successfully. Therefore we concluded that our classifier
+might have picked up the most common features of Waldo like color and glasses but we did not use
+enough training samples to learn enough other characteristics of Waldo so that he would stay
+distinguishable from other characters in the illustrations whose appearance overlaps with his. The
+same logic applies for Wenda as well. For Wizard on the other hand, we could not discover any
+traits that made our algorithm detect non-Wizard characters because of a shared attribute. His
+false positives appear to be random to us.
 
 \section{Conclusion}
 In this project, we useed several computer vision techniques and algorithms that we had
