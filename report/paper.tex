@@ -27,7 +27,6 @@ Our proposed solution is to use a histogrammed feature descriptor, then training
 %%%% body goes in here %%%%
 \section{Introduction}
 
-
 "Where's Waldo" is a series of books containing detailed, high-resolution illustrations. For this project, we are given a set of scanned images from the book, and are tasked to design a computer vision algorithm that can detect the three characters from the book: Waldo, Wenda, and the Wizard. Each image may contain one or more of these characters. We are provided with a set of training images with annotations of the bounding box locations of Waldo, Wenda, or the Wizard in each image.\\
 
 Throughout the course of the project, we have attempted several different methods with varying degrees of success. 
@@ -60,7 +59,7 @@ We proposed using a few methods:
 
 We will discuss our proposed solution in the next section.\\
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{figures/waldo_winter} 
     \caption{Exmaple of an image showing detections with \( (name, p, p_{ratio}) \) in red, ground truth in green}
@@ -70,7 +69,7 @@ We will discuss our proposed solution in the next section.\\
 \section{Proposed Solution}
 Our proposed solution has two phases: pre-processing and detection.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{figures/model_overview} 
     \caption{Schematic overview of the wlado / wenda / wizard detection pileline.}
@@ -104,7 +103,7 @@ Doing so resulted in some cropping to the actual characters appearances, which c
 However, in general we were able to regularize the bounding boxes without losing any pixels belonging to the positive annotations.
 See \autoref{fig:preprocessed-samples} for examples of the cropped and scaled input images.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.4\linewidth]{figures/preprocess_waldo} 
     \hspace{1cm}
@@ -216,6 +215,17 @@ This steps also includes potential drawing of ground truth boxes if provided
 \subsection{Results}\label{subsec:results}
 Present the results, both qualitatively (visualize) and quantitatively (specific numbers)..
 Analyze the results
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        \bottomrule
+    \end{tabular}
+    \caption{Dataset statistics for the training}
+    \label{tab:dataset-stats}
+\end{table}
+
 
 Evaluate hog only vs hog / hov
 \subsection{Discussion}
