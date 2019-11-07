@@ -15,38 +15,45 @@
 	
 \input{preamble.tex}
 \header{Maximilian Fruehauf, David Drews, Choo Wen Xin}{Where's Waldo Detector using Computer Vision}
+
 \begin{abstract}
-This report describes our group's implementation of a computer vision algorithm to detect Waldo, Wenda, and the Wizard from a series of "Where's Waldo" books. The goal of this project is to detect the three characters from the provided high-resolution images, which can be very complex with a lot of detail and many other characters. The three characters also may or may not appear in any given image.\\
-
-Due to the complex nature of the given images, and variation of the characters' appearances, detecting the characters accurately proved to be a challenge. In some cases, we could not identify where the characters are, and a lot of false positives were present as well.\\
-
-Our proposed solution is to use a histogrammed feature descriptor, then training a linear support vector machine (SVM) to create our classifier. We were able to detect some instances of Waldo, espcially in the postcard in the top left hand corner of the page.
-
-
+This report describes our group's implementation of a computer vision algorithm to detect the three
+characters Waldo, Wenda, Wizard in a series of high-resolution scans taken from the "Where's Waldo"
+books. Due to the complex nature of the illustrations, the variation of the characters' appearances
+and the constraint to use non-deep learning techniques only, detecting the characters accurately
+proved to be a challenge. We combined a histogram over gradients (HoG) with a histogram over values
+(HoV) feature descriptor to train a SVM find the characters in the images. While being able to
+detect a decent amount of Waldos and Wendas, our SVM only detects a few Wizards which correlates to
+the number of training samples available for each class.
 \end{abstract}
+
 %%%% body goes in here %%%%
 \section{Introduction}
 
+"Where's Waldo" is a series of books containing detailed, high-resolution illustrations. The
+illustrations are characterised by showing a large number of people pursuing various activities in an
+often themed environment. The reader must find the characters who may or may not appear on any given
+page. For this project, we are given a set of scanned images from the books and are tasked to design a
+computer vision algorithm that can detect the three characters from the book: Waldo, Wenda, and the
+Wizard. We are provided with a set of training images with annotations of the bounding box locations of
+Waldo, Wenda and Wizard in each image.\\
 
-"Where's Waldo" is a series of books containing detailed, high-resolution illustrations. For this project, we are given a set of scanned images from the book, and are tasked to design a computer vision algorithm that can detect the three characters from the book: Waldo, Wenda, and the Wizard. Each image may contain one or more of these characters. We are provided with a set of training images with annotations of the bounding box locations of Waldo, Wenda, or the Wizard in each image.\\
+Throughout the course of the project, we attempted several different methods with varying degrees
+of success due to the difficult nature of the task. While there are several existing computer vision
+algorithms for object detection in general and face detection specifically, such as the "You Only Look
+Once" object detection~\cite{redmon2016yolo}, we were not allowed to use deep learning based approaches
+in this project. As the characters are illustrated, face detection classifiers that were pre-trained
+with human faces weren't performing well in our problem domain. Lastly, the characters' appearance and size
+varies a lot across images. For example, sometimes only a smaller part of the character such as part
+of the face is visible and the rest is covered contents within the image. These boundary conditions
+make finding and identifying the characters very challenging.\\
 
-Throughout the course of the project, we have attempted several different methods with varying degrees of success. While there are several existing computer vision algorithms for face and object detection, such as the "You Only Look Once" object detection~\cite{redmon2016yolo}, these do not seem to work too well with illustrated characters like Waldo, in a complex illustrated iamge. The characters' appearance and size also seems to vary across images, sometimes only a smaller part of the character (i.e a part of the face) is visible. This makes identifying the characters more challenging as well.\\
+Across all approaches, we only worked with the data that was handed to us as part of the assignment.
+Although our code alters the given data wherever needed, we did neither add any entirely new data from
+sources like the internet nor did we manually improve the existing data as could be achieved by adding
+or improving annotations.\\
 
-Across all approaches, we've only been working with the data that was handed to us as part of the assignment. Although our code alters the given data wherever needed, we did neither add any entirely new data from sources like the internet nor did we manually improve the existing data as could be achieved by adding or improving annotations.\\
-
-The data we utilised can be summarised as follows:
-
-\begin{itemize}
-    \item 80 high resolution images from the \textit{Where's Waldo} book series
-    \item 137 images of Waldo cropped to the patch of the image as describe in the annotation files
-    \item 43 images of Wenda cropped to the patch of the image as describe in the annotation files
-    \item 27 images of Wizard cropped to the patch of the image as describe in the annotation files
-    \item Approximately 14,000 to 15,000 images (128x128px) subsampled from the original images, which did neither contain Waldo, Wenda or Wizard, used as negative training samples
-\end{itemize}
-
-In order to assess the performance of our algorithms we split the given set of images in a training and a testing set. This reduced the amount of positive samples of the three characters to 124 training samples for Waldo, 36 for Wenda and 24 for Wizard. As we will discuss in the upcoming sections, this uneaven split of training samples influenced the performance of our solution for the three different classes. 
-
-We proposed using a few methods:
+We proposed focusing on the following methods which we will explain in the next section:
 
 \begin{itemize}
     \item histogram over gradients (HoG) feature descriptor
@@ -54,7 +61,7 @@ We proposed using a few methods:
     \item training a linear support vector machine (SVM) to create a multiclass-classifier
 \end{itemize}
 
-We will discuss our proposed solution in the next section.\\
+% TODO: Does the image make sense here? It's not referenced within the Introduction.
 
 \begin{figure}[h]
     \centering
@@ -142,7 +149,7 @@ Additonal information in the exact size of the dataset is shown in \autoref{tab:
         negative & 13315&  98.47\% \\
         \bottomrule
     \end{tabular}
-    \caption{Dataset statistics for the training}
+    \caption{Dataset statistics for the SVM training}
     \label{tab:dataset-stats}
 \end{table}
 
@@ -154,7 +161,7 @@ the first 3 steps of which are covered in \autoref{subsec:data-prep}. In the fol
 steps 4-7 of any detection and provide some details of interest in the implementation.
 
 \paragraph{HOG \& HOV feauture descriptor}
-To capture shape and color information from the preprocessed sample images, we adopt a twofold feature descriptor, 
+To capture shape and color information from the preprocessed sample images, we adopt a two-fold feature descriptor, 
 which consists of the HOG descriptor and a histogramed version of the SIFT detector, we call HOV.
 
 HOG works by first calculating the horizontal and vertical gradients in the image, which are then separated into
