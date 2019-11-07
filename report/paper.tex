@@ -20,7 +20,7 @@ This report describes our group's implementation of a computer vision algorithm 
 
 Due to the complex nature of the given images, and variation of the characters' appearances, detecting the characters accurately proved to be a challenge. In some cases, we could not identify where the characters are, and a lot of false positives were present as well.\\
 
-Our proposed solution is to use a histogram over gradients (HoG) feature descriptor, then training a linear support vector machine (SVM) to create our classifier. We were able to detect some instances of Waldo, espcially in the postcard in the top left hand corner of the page.
+Our proposed solution is to use a histogrammed feature descriptor, then training a linear support vector machine (SVM) to create our classifier. We were able to detect some instances of Waldo, espcially in the postcard in the top left hand corner of the page.
 
 
 \end{abstract}
@@ -50,6 +50,7 @@ We proposed using a few methods:
 
 \begin{itemize}
     \item histogram over gradients (HoG) feature descriptor
+    \item histogram over values (HoV) feature descriptor
     \item training a linear support vector machine (SVM) to create a multiclass-classifier
 \end{itemize}
 
@@ -82,22 +83,22 @@ Give an overview of your solution, put it in a framework. Then, detail each part
     \hspace{1cm}
     \includegraphics[width=0.4\linewidth]{figures/kmeans_waldo} 
     \caption{Preprocessed sample images for the waldo class. The left images are cropped and scaled to \( 128 \times 128 \) pixels.
-    To the right the same images are shown after kemans preprocessing (originally gray-cale, but color mapped for display purposes)}
+    To the right the same images are shown after kemans preprocessing (originally gray-scale, but color mapped for display purposes)}
     \label{fig:preprocessed-samples}
 \end{figure}
 
 The images in the dataset come as annotated bounding boxes of varying aspect ratios and sizes in pixels.
 Also the size of the respective images changes as well. Therefore we simplified the detection process by
 generating \( (128 \times 128) \) px training images from the provided bounding boxes. 
-Doing so resulted in some croping to the actual characters appearances, which cannot be avoided in some corner cases.
-However in general we were able to regularize the bounding boxes without loosing any pixels belong to the positive annotations.
+Doing so resulted in some cropping to the actual characters appearances, which cannot be avoided in some corner cases.
+However, in general we were able to regularize the bounding boxes without losing any pixels belonging to the positive annotations.
 See \autoref{fig:preprocessed-samples} for examples of the cropped and scaled input images.
 
 To map the color images as robustly as possible to gray scale values we used a K-Means detector 
 and assigned each of the modes an equally gray spaced color. 
 K-Means works by intially choosing random starting points in the image and then projecting an area around them, calculating the "center of gravity"
 of those inlier points and then shifting the new centroid to this "center of gravity". When repeating this
-process until convergence \( k \) such different means are found. This process results in a non-uniform quantization of the input image.
+process until convergence, \( k \) such different means are found. This process results in a non-uniform quantization of the input image.
 
 We use this property to train the K-Means classifier on a sample image of the \verb|wenda| class, which only 
 shows the colors red, blue, black white. However we use \( k=5 \) to classify any color not lying in these four as a separate class, and then merge 
@@ -107,7 +108,7 @@ reducing input noise when processing the images with our feature descriptor in \
 
 \vspace{0.5cm}
 Generating negative samples is done by randomly sampling regions of differing scales and positions from the provided training images.
-In this process we additionally make sure, none of the proposed negative samples overlapping with any on the ground truth annotations present in the images.
+In this process we additionally make sure that none of the proposed negative samples overlap with any of the ground truth annotations present in the images.
 Then we scale these proposed negative samples to \( (128 \times 128 ) \) px and apply the filtering described in the above paragraph to each sample.
 Since the negative samples are randomly generated, we can create arbitrary amounts of them. 
 For our testing \( \approx15000 \) worked well. 
@@ -143,7 +144,7 @@ The pipeline for detecting the classes of a given bounding box are displayed in 
 the first 3 steps of which are covered in \autoref{subsec:data-prep}. In the following paragraps we will focus on the
 steps 4-7 of any detection and provide some details of interest in the implementation.
 
-\paragraph{HOG \& HOV feauture descritor}
+\paragraph{HOG \& HOV feauture descriptor}
 To capture shape and color information from the preprocessed sample images, we adopt a twofold feature descriptor, 
 which consists of the HOG descriptor and a histogramed version of the SIFT detector, we call HOV.
 
@@ -167,7 +168,7 @@ Deciding which of the four classes \( \{waldo, wenda, wizard, negative \} \) sho
 as confidently as possible, is handled by an ensemble of SVMs (Support Vector Machine)\cite{Hearst:1998:SVM:630302.630387}.
 
 One SVM can only be used as a binary classifier, as explained in the remainder of this paragraph, but we require multiclass classification. 
-Therefore we adopt a one-vs-pne classification approach, where for each pair of classes \( \forall i,j: (c_i,c_j) \) a separate binary classifier is trained
+Therefore we adopt a one-vs-one classification approach, where for each pair of classes \( \forall i,j: (c_i,c_j) \) a separate binary classifier is trained
 and classifications are chosen by majority vote. We chose a one-vs-one approach versus a more traditional one-vs-rest approach as we a very unequal distribution of
 positive an negative samples. Therefore any one-vs-rest classifier learns to only differentiate between the given class and negative samples. This showed itself 
 during testing and classification performance could be improved by switching to a one-vs-one approach, even considering the additional computational expense.
@@ -179,7 +180,7 @@ However this only works well if the data can be linearly separated by the dimens
 Since this is not always the case, and in general hard to analyse in high dimensional cases, we adopt an approach called RBF (Radial basis function) as proposed in\cite{10.1007/978-3-540-28647-9_85}.
 Wang et. al. use this radial basis function to extend the data into another dimension, which in which it is hopefully linearly separable. Fitting this RBF kernel is also done at training time.
 Traditionally SVMs can only give a distance of the sample from the decision hyperplane as a measure of confidence. 
-However for this metric is not always accurate and generally unbounded in value. Therefore we train another probabalistic model as proposed by Platt\ et.\ al.\cite{Platt99probabilisticoutputs}.
+However this metric is not always accurate and generally unbounded in value. Therefore we train another probabalistic model as proposed by Platt\ et.\ al.\cite{Platt99probabilisticoutputs}.
 This applies cross validation on splits of the training data to calculate these probabilities, causing more computational expense during training.
 
 Classification with the trained SVM is performed by first proposing a large amount of windows on the image and scaling each one to 
@@ -191,12 +192,12 @@ All predictions of the class \( negative \) get discarded, the other ones are pa
 
 \paragraph{Non-Maximum Suppression}
 Since Classification is done for each window independently, and windows are densely sampled to provide good prediction accuracy, 
-overlapping windows are possible. These get removed my performing Non-Maximum Suppression, which partitions all detections into groups according to their overlap.
+overlapping windows are possible. These get removed by performing Non-Maximum Suppression, which partitions all detections into groups according to their overlap.
 Then for each of these groups, we chose the element with the maximum \( p \) value. Additional filtering is applied based on \( p_{ratio} > 1.5 \wedge p > 0.5 \) having to be true for each detection.
 There values were determined experimentally to reduce the number of low confidence detections in the final result.
 
 \paragraph{Class Label outputs}
-In the final step the detections after Non-Maximum Suppression are drawn to the input image and returned. 
+In the final step, the detections after Non-Maximum Suppression are drawn to the input image and returned. 
 This steps also includes potential drawing of ground truth boxes if provided
 
 \subsection{Results}\label{subsec:results}
