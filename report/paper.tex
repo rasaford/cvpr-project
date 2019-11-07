@@ -56,7 +56,7 @@ We proposed using a few methods:
 
 We will discuss our proposed solution in the next section.\\
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{figures/waldo_winter} 
     \caption{Exmaple of an image showing detections with \( (name, p, p_{ratio}) \) in red, ground truth in green}
@@ -64,20 +64,43 @@ We will discuss our proposed solution in the next section.\\
 \end{figure}
 
 \section{Proposed Solution}
-Give an overview of your solution, put it in a framework. Then, detail each part in the framework.
+Our proposed solution has two phases: pre-processing and detection.
 
-\begin{figure}[ht]
-\centering
-    \includegraphics[width=14cm]{figures/coteaching.png}
-    \caption{Our proposed solution.}
-    \label{fig:framework}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/model_overview} 
+    \caption{Schematic overview of the wlado / wenda / wizard detection pileline.}
+    \label{fig:model-overview}
 \end{figure}
+
+In the pre-processing phase, we will take all the provided high-resolution training images and crop out the three characters using the given input bounding box annotations. Negative samples will be obtained by arbitiarily sampling regions from the images that do not overlap with the given character bounding boxes. We will scale all these images to a fixed size for simplification. We will then run k-means preprocessing on these images to map the colored sample images to grayscale values.
+
+The details will be further discussed in \autoref{subsec:data-prep}\\
+
+Our detection phase first involves histogramming two types of feature descriptors: gradients (HoG) and values (HoV).
+
+HoG will be used to histogram horizontal and vertical gradients in the image, which could be quite helpful in identifying features like the horizontal stripes in Waldo and Wenda's shirts. HoV is to histogram values from a SIFT detector.
+
+We will use our training samples to train support vector machines (SVM) as a classifier to determine whether a window is either \(Waldo, Wenda, Wizard or Negative\). The classifier will predict a probability \(p\) that a window belongs to a certain class, and a ratio \(p_ratio\) to indicate the classifier's confidence in ratio to the other classes.
+
+Afterwhich, we will perform non-maximum supression to rermove overlapping windows by choosing the one with the highest probability in each group.
+
+Finally, the resulting boxes with the class label will be drawn on the image with the value of its probability and ratio.
+
+The details will be further discussed in \autoref{subsec:implementation}\\
 
 
 \section{Experiments}
 \subsection{Data Preparation and Configuration}\label{subsec:data-prep}
 
-\begin{figure}[]
+The images in the dataset come as annotated bounding boxes of varying aspect ratios and sizes in pixels.
+Also the size of the respective images changes as well. Therefore we simplified the detection process by
+generating \( (128 \times 128) \) px training images from the provided bounding boxes. 
+Doing so resulted in some cropping to the actual characters appearances, which cannot be avoided in some corner cases.
+However, in general we were able to regularize the bounding boxes without losing any pixels belonging to the positive annotations.
+See \autoref{fig:preprocessed-samples} for examples of the cropped and scaled input images.
+
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.4\linewidth]{figures/preprocess_waldo} 
     \hspace{1cm}
@@ -86,13 +109,6 @@ Give an overview of your solution, put it in a framework. Then, detail each part
     To the right the same images are shown after kemans preprocessing (originally gray-scale, but color mapped for display purposes)}
     \label{fig:preprocessed-samples}
 \end{figure}
-
-The images in the dataset come as annotated bounding boxes of varying aspect ratios and sizes in pixels.
-Also the size of the respective images changes as well. Therefore we simplified the detection process by
-generating \( (128 \times 128) \) px training images from the provided bounding boxes. 
-Doing so resulted in some cropping to the actual characters appearances, which cannot be avoided in some corner cases.
-However, in general we were able to regularize the bounding boxes without losing any pixels belonging to the positive annotations.
-See \autoref{fig:preprocessed-samples} for examples of the cropped and scaled input images.
 
 To map the color images as robustly as possible to gray scale values we used a K-Means detector 
 and assigned each of the modes an equally gray spaced color. 
@@ -104,7 +120,7 @@ We use this property to train the K-Means classifier on a sample image of the \v
 shows the colors red, blue, black white. However we use \( k=5 \) to classify any color not lying in these four as a separate class, and then merge 
 its results with the white color class. Then these four resulting classes colored centroids are mapped to uniformly
 chosen values \( v \in [0, 255] \). This drastically reduces the complexity of the input images as can be seen in the right image in \autoref{fig:preprocessed-samples},
-reducing input noise when processing the images with our feature descriptor in \autoref{sec:implemenation}.
+reducing input noise when processing the images with our feature descriptor in \autoref{subsec:implementation}.
 
 \vspace{0.5cm}
 Generating negative samples is done by randomly sampling regions of differing scales and positions from the provided training images.
@@ -131,14 +147,7 @@ Additonal information in the exact size of the dataset is shown in \autoref{tab:
 \end{table}
 
 
-\subsection{Implementation}\label{sec:implemenation}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{figures/model_overview} 
-    \caption{Schematic overview of the wlado / wenda / wizard detection pileline.}
-    \label{fig:model-overview}
-\end{figure}
+\subsection{Implementation}\label{subsec:implementation}
 
 The pipeline for detecting the classes of a given bounding box are displayed in \autoref{fig:model-overview},
 the first 3 steps of which are covered in \autoref{subsec:data-prep}. In the following paragraps we will focus on the
