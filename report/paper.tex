@@ -104,7 +104,7 @@ Doing so resulted in some cropping to the actual characters appearances, which c
 However, in general we were able to regularize the bounding boxes without losing any pixels belonging to the positive annotations.
 See \autoref{fig:preprocessed-samples} for examples of the cropped and scaled input images.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.4\linewidth]{figures/preprocess_waldo} 
     \hspace{1cm}
@@ -132,9 +132,8 @@ Since the negative samples are randomly generated, we can create arbitrary amoun
 For our testing \( \approx15000 \) worked well. 
 Additonal information in the exact size of the dataset is shown in \autoref{tab:dataset-stats}.
 
-\vspace{0.5cm}
 
-\begin{table}[h]
+\begin{table}
     \centering
     \begin{tabular}{ccc}
         \toprule
@@ -332,25 +331,39 @@ However the greater IoU comes at the cost of additional computational expense, a
 
 Looking at the results our classifier produced for the test images, it appears that the internal
 representation of our classes is not distinctive enough to achieve a very good classification performance.
-An example for a classification error that undergirds this hypothesis can be seen in Image 1 of
+An example for a classification error that underlines this hypothesis can be seen in \( I_1 \) of
 \autoref{fig:detections}. The dog wears glasses and its colours match the typical appearance of
-Waldo but other than that they don't have much in commonn. Nevertheless, it is classified as Waldo
-whereas non of the Wizards is detected successfully. Therefore we concluded that our classifier
+Waldo but other than that they don't have much in common. Nevertheless, it is classified as Waldo,
+whereas the Wizard is not detected. Therefore we concluded that our classifier
 might have picked up the most common features of Waldo like color and glasses but we did not use
 enough training samples to learn enough other characteristics of Waldo so that he would stay
 distinguishable from other characters in the illustrations whose appearance overlaps with his. The
-same logic applies for Wenda as well. For Wizard on the other hand, we could not discover any
+same logic applies to Wenda as well. For Wizard on the other hand, we could not discover any
 traits that made our algorithm detect non-Wizard characters because of a shared attribute. His
-false positives appear to be random to us.
+false positives appear very much random to us.
 
 \section{Conclusion}
-In this project, we useed several computer vision techniques and algorithms that we had
-learnt in class, and put them into practice. Though our solution needs further work on the dismissal of
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\linewidth}
+    \includegraphics[width=\linewidth]{figures/detections_2}
+    \end{subfigure}
+    \begin{subfigure}{0.45\linewidth}
+    \includegraphics[width=\linewidth]{figures/detections_3}
+    \end{subfigure}
+    \caption{Detection on full size images of the validation set. Ground truth is shown in green, detections in red.}
+    \label{fig:detections-img}
+\end{figure}
+
+In this project, we used several computer vision techniques and algorithms that we had
+learnt in class, and put them into practice. Though our solution needs further work (see \autoref{fig:detections-img}) on the dismissal of
 false positives, we manage to detect several instances of the characters of interest. By trying several
 classification approaches simultaneously in the beginning of the project phase, we were able to reject those
 which were less promising and could therefore concentrate our energy on improving the algorithm providing
 the best results. The pursue of the idea to combine two feature descriptors lead to a significant increase
 of the average performance of our classifier.
+
+\pagebreak
 
 \section{Group Information}
 
@@ -360,14 +373,15 @@ of the average performance of our classifier.
     \toprule
      Member & Student ID & Email & Contribution\\
     \midrule
-    Maximilian Fruehauf& A0207441N & e0445541@u.nus.edu & xxx \\
-    David Drews& Axx &e0454245@u.nus.edu & xxx  \\
-    Choo Wen Xin& A0160465H & e0053347@u.nus.edu & xxx  \\
+    Maximilian Fruehauf& A0207441N & e0445541@u.nus.edu & HOG/HOV \& SVM, Report \\
+    David Drews& Axx &e0454245@u.nus.edu & Haar Cascade, Report \\
+    Choo Wen Xin& A0160465H & e0053347@u.nus.edu & Histogram Correlation, Report \\
     \bottomrule
     \end{tabular}
     \caption{Group member information.}
     \label{tab:dataset}
 \end{table*}
+
 
 \bibliographystyle{plain}
 
