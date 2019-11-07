@@ -221,8 +221,6 @@ In the final step, the detections after Non-Maximum Suppression are drawn to the
 This steps also includes potential drawing of ground truth boxes if provided
 
 \subsection{Results}\label{subsec:results}
-Present the results, both qualitatively (visualize) and quantitatively (specific numbers)..
-Analyze the results
 
 \begin{figure}[]
     \centering
@@ -231,10 +229,10 @@ Analyze the results
         \toprule
         class & precision & recall & \( F_1 \) score & \#samples \\
         \midrule
-           waldo &  1.00 &  0.69 & 0.82 &  13 \\
-           wenda &  0.80 &  0.57 & 0.67 &   7 \\
-          wizard &  0.00 &  0.00 & 0.00 &   3 \\
-        negative &  0.69 &  1.00 & 0.82 &  20 \\
+           waldo &  1.00 &  0.69 & \textbf{0.82} &  13 \\
+           wenda &  0.80 &  0.57 & \textbf{0.67} &   7 \\
+          wizard &  0.00 &  0.00 & \textbf{0.00} &   3 \\
+        negative &  0.69 &  1.00 & \textbf{0.82} &  20 \\
         \bottomrule
     \end{tabular}
     \end{subfigure}
@@ -245,6 +243,60 @@ Analyze the results
     \caption{Classification accuracies for waldo, wenda, wizard and negative classes on the HOG/HOV and SVM classifier
     with confusion matrix between the classes to the right.}
     \label{tab:classification_acc}
+\end{figure}
+
+
+% Present the results, both qualitatively (visualize) and quantitatively (specific numbers)..
+% Analyze the results
+Our Evaluation was is twofold, as we will firstly cover just the HOG/HOV \& SVM classifier itself, as evaluated on the 
+validation set provided and then discuss how these results transfer over to the more general problem of detecting the classes in
+full images.
+
+For evaluation we use the now standard metrics in computer vision of precision, recall and their harmonic average the \( F_1 \) score.
+They are defined as follows:
+
+\begin{equation*}
+    \text{precision} = \frac{|TP|}{|TP| + |FP|}  
+    \quad
+    \text{recall} = \frac{|TP|}{|TP| + |FN|}
+    \quad
+    F_1 = 2\cdot \frac{\text{precision} \cdot \text{precall}}{\text{precision} + \text{recall}}
+\end{equation*}
+Where \( TP \) is the set of \textbf{true positives}, intuitively detections of waldo, wenda, wizard or negative, which are also marked 
+as the \textit{same} class in the validation set. 
+\( FP \) is the set of \textbf{false positives}, intuitively cases where the detection is marked as the class under consideration, but actually belongs to any of the other ones.
+\( FN \) is the set of \textbf{false negatives}, intuitively detections considered to be one of the classes other then the one under consideration, but which do belong to that class.
+
+Considering the results achieved by the HOG/HOV \& SVM classifier on the validation set, 
+we can see in \autoref{tab:classification_acc} that \( F_1 \) scores for the classes waldo and negatives are quite high, with
+their precision and recall scores being opposites of each other. This suggests, that even although we trained a multiclass classifier, 
+it is effectively classifying between the waldo and negative classes. This assumption also holds further when looking at the other
+\( F_1 \) scores for wenda and wizard. They are acceptable for wenda, but none of the testing examples were classified as wizard, 
+showing how our classifier is very unlikely to correctly detect wizard windows, which we will also discuss in the following paragraphs.
+
+Gengeralizing our classifier to multiclass detector, we will now consider cropped images showing one ground truth class per image. 
+Exemplary we have chosen three images to analyse from the dataset in \autoref{fig:detections}.
+Already in the images one can see that overlap between the ground truth bounding boxes and the detections is not always large.
+This is especially the case for \( I_1 \) containing wizard images, where the detected bounding box for wizard looks similar to the
+ground truth box but is still a miss. We claim this could be classified as a close miss, hinting at a larger problem present in the dataset, 
+of there being many possible windows which look very similar to true detections but are still considered negative even to the human eye. 
+However the detections for \( I_2, I_3 \) are closer to the ground truth.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.3\linewidth}
+    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_1}}{Wizard image: \( I_1 \)}
+    \end{subfigure}
+    \begin{subfigure}{0.3\linewidth}
+    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_2}}{Wenda image: \( I_2 \)}
+    \end{subfigure}
+    \begin{subfigure}{0.3\linewidth}
+    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_3}}{Waldo image: \( I_3 \)}
+    \end{subfigure}
+    \caption{Cropped wizard, wenda and waldo images \( I_1, I_2, I_3 \) with ground truth bounding boxes marked in green, 
+    detections by HOG/HOV \& SVM in red with associated \( p, p_{ratio} \) values.}
+    \label{fig:detections}
 \end{figure}
 \begin{table}
     \centering
@@ -261,33 +313,7 @@ Analyze the results
     as well as mean computation time.}
     \label{tab:class-iou}
 \end{table}
-\begin{figure}
-    \centering
-    \begin{subfigure}{0.3\linewidth}
-    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_1}}{Wizard image: \( I_1 \)}
-    \end{subfigure}
-    \begin{subfigure}{0.3\linewidth}
-    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_2}}{Wenda image: \( I_2 \)}
-    \end{subfigure}
-    \begin{subfigure}{0.3\linewidth}
-    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_3}}{Waldo image: \( I_3 \)}
-    \end{subfigure}
-    \caption{Cropped wizard, wenda and waldo images \( I_1, I_2, I_3 \) with ground truth bounding boxes marked in green, detections in red.
-    Every cropped image only contains only one ground truth annotation.}
-    \label{fig:detections}
-\end{figure}
 
-\begin{equation*}
-    \text{precision} = \frac{|TP|}{|TP| + |FP|}  
-    \quad
-    \text{recall} = \frac{|TP|}{|TP| + |FN|}
-    \quad
-    F_1 = 2\cdot \frac{\text{precision} \cdot \text{precall}}{\text{precision} + \text{recall}}
-\end{equation*}
-
-
-
-Evaluate hog only vs hog / hov
 \subsection{Discussion}
 Strengths and weakness in your method.
 
