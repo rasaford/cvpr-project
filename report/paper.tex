@@ -343,13 +343,27 @@ traits that made our algorithm detect non-Wizard characters because of a shared 
 false positives appear very much random to us.
 
 \section{Conclusion}
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\linewidth}
+    \includegraphics[width=\linewidth]{figures/detections_2}
+    \end{subfigure}
+    \begin{subfigure}{0.45\linewidth}
+    \includegraphics[width=\linewidth]{figures/detections_3}
+    \end{subfigure}
+    \caption{Detection on full size images of the validation set. Ground truth is shown in green, detections in red.}
+    \label{fig:detections-img}
+\end{figure}
+
 In this project, we used several computer vision techniques and algorithms that we had
-learnt in class, and put them into practice. Though our solution needs further work on the dismissal of
+learnt in class, and put them into practice. Though our solution needs further work (see \autoref{fig:detections-img}) on the dismissal of
 false positives, we manage to detect several instances of the characters of interest. By trying several
 classification approaches simultaneously in the beginning of the project phase, we were able to reject those
 which were less promising and could therefore concentrate our energy on improving the algorithm providing
 the best results. The pursue of the idea to combine two feature descriptors lead to a significant increase
 of the average performance of our classifier.
+
+\pagebreak
 
 \section{Group Information}
 
@@ -368,7 +382,6 @@ of the average performance of our classifier.
     \label{tab:dataset}
 \end{table*}
 
-\pagebreak
 
 \bibliographystyle{plain}
 
