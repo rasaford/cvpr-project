@@ -30,7 +30,11 @@ Our proposed solution is to use a histogrammed feature descriptor, then training
 
 "Where's Waldo" is a series of books containing detailed, high-resolution illustrations. For this project, we are given a set of scanned images from the book, and are tasked to design a computer vision algorithm that can detect the three characters from the book: Waldo, Wenda, and the Wizard. Each image may contain one or more of these characters. We are provided with a set of training images with annotations of the bounding box locations of Waldo, Wenda, or the Wizard in each image.\\
 
-Throughout the course of the project, we have attempted several different methods with varying degrees of success. While there are several existing computer vision algorithms for face and object detection, such as the "You Only Look Once" object detection~\cite{redmon2016yolo}, these do not seem to work too well with illustrated characters like Waldo, in a complex illustrated iamge. The characters' appearance and size also seems to vary across images, sometimes only a smaller part of the character (i.e a part of the face) is visible. This makes identifying the characters more challenging as well.\\
+Throughout the course of the project, we have attempted several different methods with varying degrees of success. 
+While there are several existing computer vision algorithms for face and object detection, 
+such as the YOLO (You Only Look Once) by Redmon et. al. \cite{redmon2016yolo}, these modern approaches
+all use Deep Convolutional Neutral Networks, which we were not allowed to use. Therefore we were looking for a "Non-Deep" method.
+The characters' appearance and size also seems to vary across images, sometimes only a smaller part of the character (i.e a part of the face) is visible. This makes identifying the characters more challenging as well.\\
 
 Across all approaches, we've only been working with the data that was handed to us as part of the assignment. Although our code alters the given data wherever needed, we did neither add any entirely new data from sources like the internet nor did we manually improve the existing data as could be achieved by adding or improving annotations.\\
 
