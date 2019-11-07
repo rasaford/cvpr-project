@@ -5,6 +5,9 @@
 \usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 \oddsidemargin=0.15in
 \evensidemargin=0.15in
 \topmargin=-.5in
@@ -216,16 +219,70 @@ This steps also includes potential drawing of ground truth boxes if provided
 Present the results, both qualitatively (visualize) and quantitatively (specific numbers)..
 Analyze the results
 
-\begin{table}[]
+\begin{figure}[]
     \centering
-    \begin{tabular}{ccc}
+    \begin{subfigure}{0.6\linewidth}
+    \begin{tabular}{lcccc}
         \toprule
+        class & precision & recall & \( F_1 \) score & \#samples \\
+        \midrule
+           waldo &  1.00 &  0.69 & 0.82 &  13 \\
+           wenda &  0.80 &  0.57 & 0.67 &   7 \\
+          wizard &  0.00 &  0.00 & 0.00 &   3 \\
+        negative &  0.69 &  1.00 & 0.82 &  20 \\
         \bottomrule
     \end{tabular}
-    \caption{Dataset statistics for the training}
+    \end{subfigure}
+    \begin{subfigure}{0.35\linewidth}
+    \includegraphics[width =\linewidth]{figures/confusion_matrix}
+    \end{subfigure}
+
+    \caption{Classification accuracies for waldo, wenda, wizard and negative classes on the HOG/HOV and SVM classifier
+    with confusion matrix between the classes to the right.}
+    \label{tab:classification_acc}
+\end{figure}
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{lccccc}
+        \toprule
+        method & \( I_1 \) IoU & \( I_2 \) IoU & \( I_3 \) IoU & Mean IoU & Mean Time \\
+        \midrule
+        Histogram correlation   & 0.8   & 0.8 & 0.8 & 1s \\
+        HOG \& SVM              &0.8    & 1.0 & 0.8 & 1s \\
+        HOG/HOV \& SVM          & 0.8   & 1.0 & 0.8 & 1s \\
+        \bottomrule
+    \end{tabular}
+    \caption{Comparison over three cropped image regions, containing one image class each with IoU (Intersection over Union) given for each image.
+    Also the mean computation time is given.}
     \label{tab:dataset-stats}
 \end{table}
 
+\begin{equation*}
+    \text{precision} = \frac{|TP|}{|TP| + |FP|}  
+    \quad
+    \text{recall} = \frac{|TP|}{|TP| + |FN|}
+    \quad
+    F_1 = 2\cdot \frac{\text{precision} \cdot \text{precall}}{\text{precision} + \text{recall}}
+\end{equation*}
+
+
+\begin{figure}[]
+    \centering
+    \begin{subfigure}{0.3\linewidth}
+    \includegraphics[width =\linewidth]{figures/detections_1}
+    \end{subfigure}
+    \begin{subfigure}{0.3\linewidth}
+    \includegraphics[width =\linewidth]{figures/detections_3}
+    \end{subfigure}
+    \begin{subfigure}{0.3\linewidth}
+    \includegraphics[width =\linewidth]{figures/detections_2}
+    \end{subfigure}
+
+    \caption{Classification accuracies for waldo, wenda, wizard and negative classes on the HOG/HOV and SVM classifier
+    with confusion matrix between the classes to the right.}
+    \label{fig:detections}
+\end{figure}
 
 Evaluate hog only vs hog / hov
 \subsection{Discussion}
@@ -240,7 +297,6 @@ In this project, we managed to make use of several computer vision techniques an
 \begin{table*}[ht]
     \centering
     \begin{tabular}{lccc}
-    % \hline
     \toprule
      Member & Student ID & Email & Contribution\\
     \midrule
