@@ -6,6 +6,7 @@
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{amsmath}
+\usepackage{stackengine}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \oddsidemargin=0.15in
@@ -241,22 +242,36 @@ Analyze the results
     with confusion matrix between the classes to the right.}
     \label{tab:classification_acc}
 \end{figure}
-
-\begin{table}[]
+\begin{table}
     \centering
     \begin{tabular}{lccccc}
         \toprule
         method & \( I_1 \) IoU & \( I_2 \) IoU & \( I_3 \) IoU & Mean IoU & Mean Time \\
         \midrule
-        Histogram correlation   & 0.8   & 0.8 & 0.8 & 1s \\
-        HOG \& SVM              &0.8    & 1.0 & 0.8 & 1s \\
-        HOG/HOV \& SVM          & 0.8   & 1.0 & 0.8 & 1s \\
+        % Histogram correlation   & 0.8   & 0.8 & 0.8 & 1s \\
+        HOG \& SVM              & 0.0   & 0.0 & 0.37 & \textbf{0.13} & 12.8 s \\
+        HOG/HOV \& SVM          &  0.0  & 0.5 & 0.09 & \textbf{0.21} & 21.3 s \\
         \bottomrule
     \end{tabular}
-    \caption{Comparison over three cropped image regions, containing one image class each with IoU (Intersection over Union) given for each image.
-    Also the mean computation time is given.}
-    \label{tab:dataset-stats}
+    \caption{Comparison over cropped image regions (see \autoref{fig:detections}). Given is IoU with the ground truth bounding box for each image,
+    as well as mean computation time.}
+    \label{tab:class-iou}
 \end{table}
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.3\linewidth}
+    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_1}}{Wizard image: \( I_1 \)}
+    \end{subfigure}
+    \begin{subfigure}{0.3\linewidth}
+    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_2}}{Wenda image: \( I_2 \)}
+    \end{subfigure}
+    \begin{subfigure}{0.3\linewidth}
+    \stackunder[5pt]{\includegraphics[height=4.5cm]{figures/crop_3}}{Waldo image: \( I_3 \)}
+    \end{subfigure}
+    \caption{Cropped wizard, wenda and waldo images \( I_1, I_2, I_3 \) with ground truth bounding boxes marked in green, detections in red.
+    Every cropped image only contains only one ground truth annotation.}
+    \label{fig:detections}
+\end{figure}
 
 \begin{equation*}
     \text{precision} = \frac{|TP|}{|TP| + |FP|}  
@@ -267,22 +282,6 @@ Analyze the results
 \end{equation*}
 
 
-\begin{figure}[]
-    \centering
-    \begin{subfigure}{0.3\linewidth}
-    \includegraphics[width =\linewidth]{figures/detections_1}
-    \end{subfigure}
-    \begin{subfigure}{0.3\linewidth}
-    \includegraphics[width =\linewidth]{figures/detections_3}
-    \end{subfigure}
-    \begin{subfigure}{0.3\linewidth}
-    \includegraphics[width =\linewidth]{figures/detections_2}
-    \end{subfigure}
-
-    \caption{Classification accuracies for waldo, wenda, wizard and negative classes on the HOG/HOV and SVM classifier
-    with confusion matrix between the classes to the right.}
-    \label{fig:detections}
-\end{figure}
 
 Evaluate hog only vs hog / hov
 \subsection{Discussion}
