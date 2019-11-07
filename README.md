@@ -11,4 +11,6 @@ This document explains how setup our project so that you can reproduce our class
 2. Run the Jupyter notebook *train_detector.ipynb* step by step
 
 	- For testing our solution on the hold-out set please do not change the `TRAIN_MODEL` parameter. We've already provided you with a classifier that we've trained on all available data which will be used if you don't train a new classifier.
-	- However, in order to train the model that we've based the numbers in our report on, you have to set this parameter to `True`. Its performance is worse then the provided model as we could not train it on the validation set.
+	- Unfortunately, as we've trained the classifier on a computer running Mac OS X Mojave, you might not be able to load it on a Windows machine.
+	- In order to train the model that we've based the numbers in our report on, you have to set this parameter to `True`. Its performance is worse then the provided model as we could not train it on the validation set.
+	
