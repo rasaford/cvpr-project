@@ -282,6 +282,12 @@ ground truth box but is still a miss. We claim this could be classified as a clo
 of there being many possible windows which look very similar to true detections but are still considered negative even to the human eye. 
 However the detections for \( I_2, I_3 \) are closer to the ground truth.
 
+When comparing the performance of the HOG/HOV \& SVM approach to only using the HOG feature descriptor in \autoref{tab:class-iou}
+one can verify the relevance of our extension to the HOG feature descriptor. As highlighted, the mean IoU (Intersection over Union) 
+of ground truth bounding boxes to detection results is significantly improved when providing additional value information via the HOV descriptor, 
+compared to only using the HOV descriptor.
+However the greater IoU comes at the cost of additional computational expense, as highlighted by the mean computation time of each method.
+
 
 \begin{figure}
     \centering
@@ -315,13 +321,13 @@ However the detections for \( I_2, I_3 \) are closer to the ground truth.
 \end{table}
 
 \subsection{Discussion}
-Strengths and weakness in your method.
+% Strengths and weakness in your method.
 
-Maybe we can talk about the methods we also tried but didn't work/didn't use for the final solution here(?)
+% Maybe we can talk about the methods we also tried but didn't work/didn't use for the final solution here(?)
 
-Strengths
-Schnell
-Accuracy für Waldo
+% Strengths
+% Schnell
+% Accuracy für Waldo
 
 
 Looking at the results our classifier produced for the test images, it appears that the internal
@@ -354,7 +360,7 @@ of the average performance of our classifier.
     \toprule
      Member & Student ID & Email & Contribution\\
     \midrule
-    Maximilian Fruehauf& Axx & e0445541@u.nus.edu & xxx \\
+    Maximilian Fruehauf& A0207441N & e0445541@u.nus.edu & xxx \\
     David Drews& Axx &e0454245@u.nus.edu & xxx  \\
     Choo Wen Xin& A0160465H & e0053347@u.nus.edu & xxx  \\
     \bottomrule
