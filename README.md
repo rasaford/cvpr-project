@@ -1,6 +1,11 @@
-# README
+# Where's Waldo Object Detection in large images
+
+![Where's Waldo](img/cover.jpg)
 
 This document explains how setup our project so that you can reproduce our classification results and retrain our model.
+
+
+For more details see the [slides](slides.pdf) or the [full report](report/paper.pdf).
 
 ## Basic Steps
 
