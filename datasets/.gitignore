@@ -1,3 +1,4 @@
-Annotations/
-ImageSets/
-JPEGImages/
+Annotations/*
+ImageSets/*
+JPEGImages/*
+dataset.tar.gz
